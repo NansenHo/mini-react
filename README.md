@@ -23,4 +23,5 @@ pnpm test
 
 ## Note
 
-[Note](./note/1_render.md)
+- [implement render function](./note/1_render.md)
+- [JSX pragma](./note/2_js_pragma.md)

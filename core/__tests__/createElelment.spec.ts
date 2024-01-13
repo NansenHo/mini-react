@@ -1,5 +1,7 @@
 import { describe, it, expect } from "vitest";
-import { createElement } from "../React";
+import React from "../React";
+
+const { createElement } = React;
 
 describe("createElement", () => {
   it("should return a element vdom", () => {

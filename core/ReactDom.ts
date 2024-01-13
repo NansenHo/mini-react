@@ -1,11 +1,13 @@
-import { render } from "./React";
+import React from "./React";
 
-export const ReactDom = {
+const ReactDom = {
   createRoot(container) {
     return {
       render(app) {
-        render(app, container);
+        React.render(app, container);
       },
     };
   },
 };
+
+export default ReactDom;
