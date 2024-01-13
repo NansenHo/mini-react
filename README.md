@@ -10,7 +10,9 @@ cd mini-react
 
 pnpm i
 
-pnpm run test
+pnpm dev
+
+pnpm test
 ```
 
 ## Tech Stack
@@ -18,7 +20,6 @@ pnpm run test
 - Vite
 - Vitest
 - TypeScript
-- JavaScript
 
 ## Note
 

@@ -4,7 +4,8 @@
   "description": "Implementing a minimal React model",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "vite",
+    "test": "vitest"
   },
   "keywords": [
     "React"
@@ -12,6 +13,8 @@
   "author": "Nansen Ho",
   "license": "MIT",
   "devDependencies": {
+    "typescript": "^5.3.3",
+    "vite": "^5.0.11",
     "vitest": "^1.2.0"
   }
 }

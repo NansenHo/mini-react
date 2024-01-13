@@ -1,4 +1,4 @@
-export function createElement(type, props, ...children) {
+export function createElement(type: string, props, ...children) {
   return {
     type,
     props: {
@@ -9,8 +9,11 @@ export function createElement(type, props, ...children) {
     },
   };
 }
+const vdom = createElement("div", null, "hello");
 
-function createTextNode(text) {
+console.log(vdom, "vdom");
+
+function createTextNode(text: string) {
   return {
     type: "TEXT_ELEMENT",
     props: {
@@ -20,7 +23,7 @@ function createTextNode(text) {
   };
 }
 
-export function render(el, container) {
+export function render(el, container: HTMLElement) {
   const dom =
     el.type === "TEXT_ELEMENT"
       ? document.createTextNode(el.props.nodeValue)

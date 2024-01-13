@@ -1,4 +1,4 @@
-import { render } from "./React.js";
+import { render } from "./React";
 
 export const ReactDom = {
   createRoot(container) {
