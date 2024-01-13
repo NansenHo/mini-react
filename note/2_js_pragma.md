@@ -1,6 +1,6 @@
 # JavaScript pragma
 
-## 一行注释修改 React 变量名
+## 一行注释修改 React.createElement
 
 通过 `/**@jsx HReact.createElement */` 一行注释即可将 `React` 变量名修改为 `HReact` 等其他名字。
 

@@ -1,6 +1,6 @@
 # Mini React
 
-Implementing a minimal React model.
+实现一个简化版 React 模型。
 
 ## Quick Start
 
@@ -21,7 +21,7 @@ pnpm test
 - Vitest
 - TypeScript
 
-## Note
+## Notes
 
-- [implement render function](./note/1_render.md)
-- [JSX pragma](./note/2_js_pragma.md)
+- [渲染 `<div id="app">app</div>`](./note/1_render.md)
+- [JavaScript pragma](./note/2_js_pragma.md)
