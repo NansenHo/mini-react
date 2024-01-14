@@ -25,3 +25,4 @@ pnpm test
 
 - [渲染 `<div id="app">app</div>`](./note/1_render.md)
 - [JavaScript pragma](./note/2_js_pragma.md)
+- [实现 Fiber 架构](./note/3_fiber.md)
