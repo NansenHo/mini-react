@@ -27,9 +27,13 @@ function render(el, container: HTMLElement) {
       children: [el],
     },
   };
+
+  root = nextWorkUnit;
 }
 
 let nextWorkUnit: any = null;
+let root: any = null;
+
 function workLoop(deadline) {
   let shouldYield = false;
   while (!shouldYield && nextWorkUnit) {
@@ -38,7 +42,43 @@ function workLoop(deadline) {
     shouldYield = deadline.timeRemaining() < 1;
   }
 
+  if (!nextWorkUnit && root) {
+    commitRoot();
+    root = null;
+  }
+
   requestIdleCallback(workLoop);
+}
+
+function commitRoot() {
+  commitWork(root.child);
+}
+
+function commitWork(fiber) {
+  if (!fiber) return;
+  fiber.parent.dom.append(fiber.dom);
+  commitWork(fiber.child);
+  commitWork(fiber.sibling);
+}
+
+function performWorkOfUnit(fiber) {
+  if (!fiber.dom) {
+    const dom = (fiber.dom = createDom(fiber));
+
+    updateProps(dom, fiber.props);
+  }
+
+  initChildren(fiber);
+
+  if (fiber.child) {
+    return fiber.child;
+  }
+
+  if (fiber.sibling) {
+    return fiber.sibling;
+  }
+
+  return fiber.parent?.sibling;
 }
 
 function createDom(work) {
@@ -58,6 +98,7 @@ function updateProps(dom, props) {
 function initChildren(fiber) {
   const { children } = fiber.props;
   let prevChild: any = null;
+
   children.forEach((child, index) => {
     const newFiber = {
       type: child.type,
@@ -71,33 +112,11 @@ function initChildren(fiber) {
     if (index === 0) {
       fiber.child = newFiber;
     } else {
-      prevChild = newFiber;
+      prevChild.sibling = newFiber;
     }
 
     prevChild = newFiber;
   });
-}
-
-function performWorkOfUnit(fiber) {
-  if (!fiber.dom) {
-    const dom = (fiber.dom = createDom(fiber));
-
-    fiber.parent.dom.append(dom);
-
-    updateProps(dom, fiber.props);
-  }
-
-  initChildren(fiber);
-
-  if (fiber.child) {
-    return fiber.child;
-  }
-
-  if (fiber.sibling) {
-    return fiber.sibling;
-  }
-
-  return fiber.parent?.sibling;
 }
 
 requestIdleCallback(workLoop);
