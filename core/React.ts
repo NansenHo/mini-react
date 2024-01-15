@@ -4,13 +4,16 @@ function createElement(type: string, props, ...children) {
     props: {
       ...props,
       children: children.map((child) => {
-        return typeof child === "string" ? createTextNode(child) : child;
+        const isTextNode =
+          typeof child === "string" || typeof child === "number";
+
+        return isTextNode ? createTextNode(child) : child;
       }),
     },
   };
 }
 
-function createTextNode(text: string) {
+function createTextNode(text: string | number) {
   return {
     type: "TEXT_ELEMENT",
     props: {
@@ -56,29 +59,57 @@ function commitRoot() {
 
 function commitWork(fiber) {
   if (!fiber) return;
-  fiber.parent.dom.append(fiber.dom);
+
+  let fiberParent = fiber.parent;
+  while (!fiberParent.dom) {
+    fiberParent = fiberParent.parent;
+  }
+
+  if (fiber.dom) {
+    fiberParent.dom.append(fiber.dom);
+  }
+
   commitWork(fiber.child);
   commitWork(fiber.sibling);
 }
 
 function performWorkOfUnit(fiber) {
+  const isFunctionComponent = typeof fiber.type === "function";
+
+  if (isFunctionComponent) {
+    updateFunctionComponent(fiber);
+  } else {
+    updateHostComponent(fiber);
+  }
+
+  if (fiber.child) {
+    return fiber.child;
+  }
+
+  let nextFiber = fiber;
+  while (nextFiber) {
+    if (nextFiber.sibling) return nextFiber.sibling;
+    nextFiber = nextFiber.parent;
+  }
+}
+
+function updateFunctionComponent(fiber) {
+  const fnComponentContent = fiber.type(fiber.props);
+
+  const children = [fnComponentContent];
+  initChildren(fiber, children);
+}
+
+function updateHostComponent(fiber) {
   if (!fiber.dom) {
     const dom = (fiber.dom = createDom(fiber));
 
     updateProps(dom, fiber.props);
   }
 
-  initChildren(fiber);
+  const children = fiber.props.children;
 
-  if (fiber.child) {
-    return fiber.child;
-  }
-
-  if (fiber.sibling) {
-    return fiber.sibling;
-  }
-
-  return fiber.parent?.sibling;
+  initChildren(fiber, children);
 }
 
 function createDom(work) {
@@ -95,8 +126,7 @@ function updateProps(dom, props) {
   }
 }
 
-function initChildren(fiber) {
-  const { children } = fiber.props;
+function initChildren(fiber, children) {
   let prevChild: any = null;
 
   children.forEach((child, index) => {
