@@ -1,6 +1,4 @@
-import { describe, it, expect } from "vitest";
-import React from "../React";
-
+import React from "../../../core/React";
 const { createElement } = React;
 
 describe("createElement", () => {
@@ -28,7 +26,7 @@ describe("createElement", () => {
       type: "div",
     };
 
-    expect(vdom).toStrictEqual(expectedVdom);
+    expect(vdom).to.deep.equal(expectedVdom);
   });
 
   it("no props", () => {
@@ -49,6 +47,6 @@ describe("createElement", () => {
       type: "div",
     };
 
-    expect(vdom).toStrictEqual(expectedVdom);
+    expect(vdom).to.deep.equal(expectedVdom);
   });
 });

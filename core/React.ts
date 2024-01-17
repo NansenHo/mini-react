@@ -102,7 +102,8 @@ function updateFunctionComponent(fiber) {
 
 function updateHostComponent(fiber) {
   if (!fiber.dom) {
-    const dom = (fiber.dom = createDom(fiber));
+    const dom = createDom(fiber);
+    fiber.dom = dom;
 
     updateProps(dom, fiber.props);
   }
@@ -112,10 +113,10 @@ function updateHostComponent(fiber) {
   initChildren(fiber, children);
 }
 
-function createDom(work) {
-  return work.type === "TEXT_ELEMENT"
-    ? document.createTextNode(work.props.nodeValue)
-    : document.createElement(work.type);
+function createDom(fiber) {
+  return fiber.type === "TEXT_ELEMENT"
+    ? document.createTextNode(fiber.props.nodeValue)
+    : document.createElement(fiber.type);
 }
 
 function updateProps(dom, props) {

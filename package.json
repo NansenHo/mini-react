@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "dev": "vite",
-    "test": "vitest",
-    "build": "tsc && vite build",
-    "preview": "vite preview"
+    "test-unit": "vitest",
+    "test-e2e": "cypress run",
+    "build": "tsc && vite build"
   },
   "keywords": [
     "React"
@@ -15,6 +15,7 @@
   "author": "Nansen Ho",
   "license": "MIT",
   "devDependencies": {
+    "cypress": "^13.6.3",
     "typescript": "^5.3.3",
     "vite": "^5.0.11",
     "vitest": "^1.2.0"
