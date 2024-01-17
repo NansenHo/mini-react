@@ -122,7 +122,13 @@ function createDom(fiber) {
 function updateProps(dom, props) {
   for (const key of Object.keys(props)) {
     if (key !== "children") {
-      dom[key] = props[key];
+      const isOn = /^on[A-Z]/.test(key);
+      if (isOn) {
+        const event = key.slice(2).toLowerCase();
+        dom.addEventListener(event, props[key]);
+      } else {
+        dom[key] = props[key];
+      }
     }
   }
 }

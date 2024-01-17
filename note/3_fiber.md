@@ -6,7 +6,7 @@
 
 当处理一个非常大且深的虚拟 DOM 树时，单线程的 JavaScript 会不断递归地执行 `render` 操作，这最终可能导致浏览器后续渲染过程的阻塞。
 
-## 优化方案
+## `requestIdleCallback` & `idleDeadline.timeRemaining()`
 
 利用浏览器提供的下列接口，
 
@@ -29,9 +29,54 @@
   - `timeRemaining()` 方法，用来判断用户代理预计还剩余多少闲置时间；
   - `didTimeout` (en-US) 属性，用来判断当前的回调函数是否因超时而被执行。
 
-我们可以知道浏览器的空闲时间有多久，并在空闲时间处理任务。
+知道浏览器的空闲时间有多久后，就能利用空闲时间执行特定任务。
 
-那我们就可以在确保有空闲时间的时候，执行渲染任务。
+```ts
+function workLoop(idleDeadline) {
+  let shouldYield = false;
+  while (!shouldYield) {
+    // do something
+
+    shouldYield = idleDeadline.timeRemaining() < 1;
+  }
+
+  requestIdleCallback(workLoop);
+}
+```
+
+### `requestIdleCallback` 和宏任务与微任务的关系
+
+`requestIdleCallback` 计划的任务不属于宏任务或微任务的范畴，其在事件循环的空闲期执行。
+
+这通常发生在**当前帧**的宏任务和微任务执行完毕后，且在浏览器认为有足够空闲时间可以用于处理低优先级工作时。
+
+相比于宏任务和微任务，`requestIdleCallback` 计划的任务的优先级更低。
+
+它们是在浏览器空闲时才执行，因此**不会阻塞或延迟关键的用户界面更新和响应**。
+
+> 在实践中，`requestIdleCallback` 通常用于执行后台或低优先级的任务，如**日志记录**、**数据分析**、**更新非关键的用户界面元素**等。
+
+### 在每个宏任务中都执行特定任务
+
+下列代码中，`workLoop` 函数只会在第一个宏任务（T1）结束后被执行。
+
+```ts
+requestIdleCallback(workLoop);
+```
+
+需要在 `workLoop` 中继续调用 `requestIdleCallback(workLoop)` ，
+
+才能保证在每个宏任务结束后，浏览器都会去执行特定任务。
+
+```ts
+function workLoop() {
+  ...
+
+  requestIdleCallback(workLoop)
+}
+```
+
+## 构建链表
 
 并且，我们按 `child => sibling => uncle` 的节点顺序，
 

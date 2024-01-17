@@ -12,13 +12,16 @@ pnpm i
 
 pnpm dev
 
-pnpm test
+pnpm run test-unit
+
+pnpm run test-e2e
 ```
 
 ## Tech Stack
 
 - Vite
 - Vitest
+- Cypress
 - TypeScript
 
 ## Notes
@@ -26,3 +29,4 @@ pnpm test
 - [渲染 `<div id="app">app</div>`](./note/1_render.md)
 - [JavaScript pragma](./note/2_js_pragma.md)
 - [实现 Fiber 架构](./note/3_fiber.md)
+- [统一提交](./note/4_commit_root.md)
