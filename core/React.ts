@@ -123,6 +123,8 @@ function performWorkOfUnit(fiber) {
 
 function updateFunctionComponent(fiber) {
   wipFiber = fiber;
+  stateHooks = [];
+  stateHookIndex = 0;
 
   const children = [fiber.type(fiber.props)];
 
@@ -149,8 +151,8 @@ function createDom(fiber) {
 
 function updateProps(dom, nextProps, prevProps) {
   for (const key in prevProps) {
-    const hasKeyWithinNextProps = !nextProps[key] && nextProps[key] !== 0;
-    if (hasKeyWithinNextProps) {
+    const hasKeyWithinNextProps = !!nextProps[key] || nextProps[key] === 0;
+    if (!hasKeyWithinNextProps) {
       dom.removeAttribute(key);
     }
   }
@@ -244,7 +246,45 @@ function update() {
   };
 }
 
+interface StateHookType {
+  state: any;
+  queue: any[];
+}
+
+let stateHooks: StateHookType[];
+let stateHookIndex: number;
+function useState(initial) {
+  const oldStateHook = wipFiber.alternate?.stateHooks[stateHookIndex];
+  const stateHook: StateHookType = {
+    state: oldStateHook ? oldStateHook.state : initial,
+    queue: oldStateHook ? oldStateHook.queue : [],
+  };
+
+  for (const action of stateHook.queue) {
+    stateHook.state = action(stateHook.state);
+  }
+  stateHook.queue = [];
+
+  stateHooks.push(stateHook);
+  stateHookIndex++;
+
+  wipFiber.stateHooks = stateHooks;
+
+  function setState(action) {
+    const isFunction = typeof action === "function";
+    const eagerState = isFunction ? action() : action;
+
+    if (eagerState === stateHook.state) return;
+
+    stateHook.queue.push(isFunction ? action : () => action);
+    update()();
+  }
+
+  return [stateHook.state, setState];
+}
+
 const React = {
+  useState,
   update,
   render,
   createElement,
