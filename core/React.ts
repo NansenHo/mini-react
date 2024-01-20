@@ -254,6 +254,7 @@ interface StateHookType {
 let stateHooks: StateHookType[];
 let stateHookIndex: number;
 function useState(initial) {
+  let currentFiber = wipFiber;
   const oldStateHook = wipFiber.alternate?.stateHooks[stateHookIndex];
   const stateHook: StateHookType = {
     state: oldStateHook ? oldStateHook.state : initial,
@@ -277,7 +278,13 @@ function useState(initial) {
     if (eagerState === stateHook.state) return;
 
     stateHook.queue.push(isFunction ? action : () => action);
-    update()();
+
+    wipRoot = {
+      ...currentFiber,
+      alternate: currentFiber,
+    };
+
+    nextWorkUnit = wipRoot;
   }
 
   return [stateHook.state, setState];
