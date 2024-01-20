@@ -8,6 +8,14 @@ function Hello() {
     setHello("hello world");
   }
 
+  React.useEffect(() => {
+    console.log("This should be called once - Hello");
+
+    return () => {
+      console.log("clean up - Hello");
+    };
+  }, [hello]);
+
   return (
     <div>
       {hello}
@@ -26,12 +34,28 @@ function App() {
     setBar("bar");
   }
 
+  React.useEffect(() => {
+    console.log("This useEffect should be called once.");
+
+    return () => {
+      console.log("clean up - should not be called");
+    };
+  }, []);
+
+  React.useEffect(() => {
+    console.log("This useEffect should be called when count changed.");
+
+    return () => {
+      console.log("clean up - should be called");
+    };
+  }, [count]);
+
   return (
     <div class="app">
       {count}
       <div>{bar}</div>
       <Hello />
-      <button onClick={handleClickRoot}>click me!</button>
+      <button onClick={handleClickRoot}>click me app!</button>
     </div>
   );
 }
