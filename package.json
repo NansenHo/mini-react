@@ -7,6 +7,7 @@
     "dev": "vite",
     "test-unit": "vitest",
     "test-e2e": "cypress run",
+    "test-e2e:open": "cypress open",
     "build": "tsc && vite build"
   },
   "keywords": [

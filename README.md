@@ -1,32 +1,43 @@
-# Mini React
+# Mini React 18
 
-实现一个简化版 React 模型。
+このリポジトリは React 18 の学習を深めるために、React 18 の簡略版を実装しています。
 
-## Quick Start
+## 🛠️ クイックスタート
 
 ```bash
+# リポジトリをクローン
 git clone https://github.com/NansenHo/mini-react.git
 cd mini-react
 
+# パッケージをインストール
 pnpm i
 
+# 開発環境を起動
 pnpm dev
 
+# 単体テスト
 pnpm run test-unit
 
+# E2E テスト
 pnpm run test-e2e
+
+# ビルド
+pnpm run build
 ```
 
-## Tech Stack
+## 💻 テックスタック
 
-- Vite
+- TypeScript
 - Vitest
 - Cypress
-- TypeScript
+- Vite
 
-## Notes
+## 📌 タスク
 
-- [渲染 `<div id="app">app</div>`](./note/1_render.md)
-- [JavaScript pragma](./note/2_js_pragma.md)
-- [实现 Fiber 架构](./note/3_fiber.md)
-- [统一提交](./note/4_commit_root.md)
+- [x] JSX と TSX への対応
+- [x] Function コンポーネントへのサポート
+- [x] Fiber アーキテクチャを実現
+- [x] Props (event を含む)と Children の初期化
+- [x] Props (event を含む)と Children の diff での更新
+- [x] useState Hook
+- [x] useEffect Hook
